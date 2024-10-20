@@ -50,3 +50,41 @@ public:
         return st.top() == 't' ? true : false;
     }
 };
+
+// ---------------------------- Approach - 2 ------------------------------
+// Using Stack (Better one)
+
+class Solution {
+public:
+    bool parseBoolExpr(string expression) {
+        stack<char> st;
+        for(auto ch : expression) {
+            if(ch == ',' || ch == '(') continue;
+
+            if(ch == '|' || ch == '!' || ch == '&' || ch == 'f' || ch == 't'){
+                st.push(ch);
+            }
+            else if(ch == ')') {
+                bool hasTrue = false, hasFalse = false;
+                while(st.top() != '!' && st.top() != '|' && st.top() != '&')  {
+                    char curTop = st.top();
+                    st.pop();
+                    if(curTop == 'f') hasFalse = true;
+                    if(curTop == 't') hasTrue = true;
+                }
+
+                char op = st.top();
+                st.pop();
+                if(op == '!') {
+                    st.push(hasTrue ? 'f' : 't');
+                } else if(op == '&') {
+                    st.push(hasFalse ? 'f' : 't');
+                } else {
+                    st.push(hasTrue ? 't' : 'f');
+                }
+            }
+        }
+
+        return st.top() == 't';
+    }
+};
